@@ -7,6 +7,7 @@
 #include <aiPostProcess.h>
 
 #include "utils/utils.h"
+#include "assimputils/utils.h"
 
 int main(int argc, char *argv[])
 {
@@ -45,6 +46,9 @@ int main(int argc, char *argv[])
 		printf("Failed to load input file: %s\n\n", importer.GetErrorString());
 		return 1;
 	}
+
+	printf("Scene loaded.\n");
+	printf("Animated? %d\nSkeletal? %d\nStatic? %d\n", IsSceneAnimated(scene), IsSceneSkeletal(scene), IsSceneStatic(scene));
 
 	return 0;
 }
