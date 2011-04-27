@@ -17,19 +17,33 @@ int main(int argc, char *argv[])
 
 	if (argc == 1)
 	{
-		printf("Usage: assimptomesh.exe [--showinfo] inputfile\n\n");
+		printf("Usage: assimptomesh.exe [--showinfo] [--out=outputfile] inputfile\n\n");
 		return 0;
 	}
 
 	// input file is always the last argument
 	std::string file = argv[argc - 1];
+
+	std::string outputFile;
 	bool showInfo = false;
 
 	// find any options
 	for (int i = 1; i < argc - 1; ++i)
 	{
-		if (strcmp(argv[i], "--showinfo") == 0)
+		std::string arg = argv[i];
+
+		if (arg == "--showinfo")
 			showInfo = true;
+
+		else if (arg.substr(0, 6) == "--out=")
+		{
+			if (arg.length() == 6)
+			{
+				printf("Missing output filename.\n");
+				return 1;
+			}
+			outputFile = arg.substr(6);
+		}
 	}
 
 	// attempt to load the input file
@@ -52,12 +66,15 @@ int main(int argc, char *argv[])
 	}
 	printf("Scene loaded.\n");
 
-	// input file loaded, now get the output filename
-	std::string outputFile = GetMeshFilenameFromInput(file);
+	// input file loaded, now get the output filename (if not provided via command line)
 	if (outputFile.length() == 0)
 	{
-		printf("Unable to determine output mesh filename from the input file name.\n\n");
-		return 1;
+		outputFile = GetMeshFilenameFromInput(file);
+		if (outputFile.length() == 0)
+		{
+			printf("Unable to determine output mesh filename from the input file name.\n\n");
+			return 1;
+		}
 	}
 	printf("Output file: %s\n", outputFile.c_str());
 
