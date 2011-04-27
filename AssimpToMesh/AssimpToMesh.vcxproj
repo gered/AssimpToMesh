@@ -80,7 +80,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\assimputils\assimpgeometry.cpp" />
     <ClCompile Include="src\assimputils\assimpsceneinfo.cpp" />
+    <ClCompile Include="src\convert\meshutils.cpp" />
     <ClCompile Include="src\convert\skeletalanimated.cpp" />
     <ClCompile Include="src\convert\static.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -88,8 +90,13 @@
     <ClCompile Include="src\utils\fileutils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\assimputils\types.h" />
     <ClInclude Include="src\assimputils\utils.h" />
     <ClInclude Include="src\convert\convert.h" />
+    <ClInclude Include="src\convert\mesh.h" />
+    <ClInclude Include="src\convert\meshmaterial.h" />
+    <ClInclude Include="src\convert\meshtriangle.h" />
+    <ClInclude Include="src\convert\submesh.h" />
     <ClInclude Include="src\nodetree\nodetree.h" />
     <ClInclude Include="src\utils\utils.h" />
   </ItemGroup>
