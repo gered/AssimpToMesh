@@ -13,6 +13,7 @@ struct MeshMaterial
 	MeshMaterial(const aiMaterial *source)
 	{
 		aiString name;
+		aiString textureFile;
 		aiColor3D ambient;
 		aiColor3D diffuse;
 		aiColor3D specular;
@@ -28,7 +29,13 @@ struct MeshMaterial
 		source->Get(AI_MATKEY_SHININESS, shininess);
 		source->Get(AI_MATKEY_OPACITY, opacity);
 
+		// TODO: need something better then this, but based on my (limited) testing
+		//       diffuse texture seems to be the most common
+		source->Get(AI_MATKEY_TEXTURE_DIFFUSE(0), textureFile);
+
 		this->name = std::string(name.data, name.length);
+
+		this->texture = std::string(textureFile.data, textureFile.length);
 
 		this->ambient[0] = ambient.r;
 		this->ambient[1] = ambient.g;
@@ -52,6 +59,7 @@ struct MeshMaterial
 	}
 
 	std::string name;
+	std::string texture;
 	float ambient[3];
 	float diffuse[3];
 	float specular[3];

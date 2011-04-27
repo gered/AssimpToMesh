@@ -96,9 +96,12 @@ void WriteMaterials(const std::vector<MeshMaterial> &materials, FILE *fp)
 			) * count
 		);
 
-	// add up all the variable length string sizes for the material names
+	// add up all the variable length string sizes for the material names and texture filenames
 	for (uint32_t i = 0; i < count; ++i)
+	{
 		size += materials[i].name.length() + 1;    // include null terminator
+		size += materials[i].texture.length() + 1; // ditto
+	}
 
 	fputs("MTL", fp);
 	fwrite(&size, 4, 1, fp);
@@ -110,6 +113,9 @@ void WriteMaterials(const std::vector<MeshMaterial> &materials, FILE *fp)
 
 		fwrite(m->name.c_str(), m->name.length(), 1, fp);
 		char ch = '\0';
+		fwrite(&ch, 1, 1, fp);
+
+		fwrite(m->texture.c_str(), m->texture.length(), 1, fp);
 		fwrite(&ch, 1, 1, fp);
 
 		fwrite(&m->ambient[0], sizeof(float), 1, fp);
