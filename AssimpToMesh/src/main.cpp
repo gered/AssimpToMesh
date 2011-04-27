@@ -8,6 +8,7 @@
 
 #include "utils/utils.h"
 #include "assimputils/utils.h"
+#include "convert/convert.h"
 
 int main(int argc, char *argv[])
 {
@@ -48,7 +49,40 @@ int main(int argc, char *argv[])
 	}
 
 	printf("Scene loaded.\n");
-	printf("Animated? %d\nSkeletal? %d\nStatic? %d\n", IsSceneAnimated(scene), IsSceneSkeletal(scene), IsSceneStatic(scene));
+
+	if (IsSceneStatic(scene))
+	{
+		printf("Using static converter.\n");
+		try
+		{
+			ConvertStatic(scene);
+		}
+		catch (std::exception &ex)
+		{
+			printf("Error: %s\n", ex.what());
+			return 1;
+		}
+		printf("Convert complete.\n");
+	}
+	else if (IsSceneAnimated(scene) && IsSceneSkeletal(scene))
+	{
+		printf("Using skeletal animation converter.\n");
+		try
+		{
+			ConvertSkeletalAnimated(scene);
+		}
+		catch (std::exception &ex)
+		{
+			printf("Error: %s\n", ex.what());
+			return 1;
+		}
+		printf("Convert complete.\n");
+	}
+	else
+	{
+		printf("Unknown scene format.\n");
+		return 1;
+	}
 
 	return 0;
 }
