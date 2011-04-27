@@ -30,6 +30,9 @@
     <ClCompile Include="src\convert\skeletalanimated.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\nodetree\nodetree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\utils\utils.h">
@@ -39,6 +42,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\convert\convert.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nodetree\nodetree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

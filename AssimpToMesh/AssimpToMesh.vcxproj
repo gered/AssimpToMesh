@@ -84,11 +84,13 @@
     <ClCompile Include="src\convert\skeletalanimated.cpp" />
     <ClCompile Include="src\convert\static.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\nodetree\nodetree.cpp" />
     <ClCompile Include="src\utils\fileutils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\assimputils\utils.h" />
     <ClInclude Include="src\convert\convert.h" />
+    <ClInclude Include="src\nodetree\nodetree.h" />
     <ClInclude Include="src\utils\utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -9,6 +9,7 @@
 #include "utils/utils.h"
 #include "assimputils/utils.h"
 #include "convert/convert.h"
+#include "nodetree/nodetree.h"
 
 int main(int argc, char *argv[])
 {
@@ -16,22 +17,23 @@ int main(int argc, char *argv[])
 
 	if (argc == 1)
 	{
-		printf("Usage: assimptomesh.exe [inputfile]\n\n");
+		printf("Usage: assimptomesh.exe [--showinfo] inputfile\n\n");
 		return 0;
 	}
 
-	std::string file = argv[1];
-	std::string outputFile = GetMeshFilenameFromInput(file);
+	// input file is always the last argument
+	std::string file = argv[argc - 1];
+	bool showInfo = false;
 
-	if (outputFile.length() == 0)
+	// find any options
+	for (int i = 1; i < argc - 1; ++i)
 	{
-		printf("Unable to determine output mesh filename from the input file name.\n\n");
-		return 1;
+		if (strcmp(argv[i], "--showinfo") == 0)
+			showInfo = true;
 	}
 
+	// attempt to load the input file
 	printf("Input file: %s\n", file.c_str());
-	printf("Output file: %s\n", outputFile.c_str());
-
 	Assimp::Importer importer;
 	const aiScene *scene = importer.ReadFile(file,
 		aiProcess_JoinIdenticalVertices | 
@@ -47,9 +49,22 @@ int main(int argc, char *argv[])
 		printf("Failed to load input file: %s\n\n", importer.GetErrorString());
 		return 1;
 	}
-
 	printf("Scene loaded.\n");
 
+	// input file loaded, now get the output filename
+	std::string outputFile = GetMeshFilenameFromInput(file);
+	if (outputFile.length() == 0)
+	{
+		printf("Unable to determine output mesh filename from the input file name.\n\n");
+		return 1;
+	}
+	printf("Output file: %s\n", outputFile.c_str());
+
+	// optionally show info about the entire scene before doing the conversion
+	if (showInfo)
+		Walk(scene);
+
+	// attempt conversion using an appropriate converter based on what kind of scene it is
 	if (IsSceneStatic(scene))
 	{
 		printf("Using static converter.\n");
