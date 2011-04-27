@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
 		printf("Using static converter.\n");
 		try
 		{
-			ConvertStatic(scene);
+			ConvertStatic(outputFile, scene);
 		}
 		catch (std::exception &ex)
 		{
@@ -84,7 +84,7 @@ int main(int argc, char *argv[])
 		printf("Using skeletal animation converter.\n");
 		try
 		{
-			ConvertSkeletalAnimated(scene);
+			ConvertSkeletalAnimated(outputFile, scene);
 		}
 		catch (std::exception &ex)
 		{

@@ -1,5 +1,5 @@
 #include "convert.h"
 
-void ConvertStatic(const aiScene *scene)
+void ConvertStatic(const std::string &outfile, const aiScene *scene)
 {
 }

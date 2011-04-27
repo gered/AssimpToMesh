@@ -1,5 +1,5 @@
 #include "convert.h"
 
-void ConvertSkeletalAnimated(const aiScene *scene)
+void ConvertSkeletalAnimated(const std::string &outfile, const aiScene *scene)
 {
 }
