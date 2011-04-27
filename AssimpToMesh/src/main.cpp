@@ -37,6 +37,7 @@ int main(int argc, char *argv[])
 	Assimp::Importer importer;
 	const aiScene *scene = importer.ReadFile(file,
 		aiProcess_JoinIdenticalVertices | 
+		aiProcess_GenSmoothNormals |
 		aiProcess_Triangulate | 
 		aiProcess_RemoveRedundantMaterials | 
 		aiProcess_SortByPType | 
