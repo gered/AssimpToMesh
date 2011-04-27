@@ -1,10 +1,12 @@
 #include "nodetree.h"
 
 #include <stdio.h>
+#include <string>
 
 void WalkNode(const aiNode *node);
 void ShowMeshInfo(const aiMesh *mesh, const aiScene *scene);
 void ShowMaterialInfo(const aiMaterial *material);
+void ShowMaterialTextureInfo(const aiMaterial *material, aiTextureType type, const std::string &typeText);
 void ShowAnimationInfo(const aiAnimation *animation);
 
 unsigned int g_level;
@@ -161,6 +163,7 @@ void ShowMeshInfo(const aiMesh *mesh, const aiScene *scene)
 void ShowMaterialInfo(const aiMaterial *material)
 {
 	aiString name;
+	aiString textureFile;
 	aiColor3D ambient;
 	aiColor3D diffuse;
 	aiColor3D specular;
@@ -183,6 +186,36 @@ void ShowMaterialInfo(const aiMaterial *material)
 	printf("    Emissive:  %f, %f, %f\n", emissive.r, emissive.g, emissive.b);
 	printf("    Shininess: %f\n", shininess);
 	printf("    Opacity:   %f\n", opacity);
+
+	ShowMaterialTextureInfo(material, aiTextureType_NONE, "aiTextureType_NONE");
+	ShowMaterialTextureInfo(material, aiTextureType_DIFFUSE, "aiTextureType_DIFFUSE");
+	ShowMaterialTextureInfo(material, aiTextureType_SPECULAR, "aiTextureType_SPECULAR");
+	ShowMaterialTextureInfo(material, aiTextureType_AMBIENT, "aiTextureType_AMBIENT");
+	ShowMaterialTextureInfo(material, aiTextureType_EMISSIVE, "aiTextureType_EMISSIVE");
+	ShowMaterialTextureInfo(material, aiTextureType_HEIGHT, "aiTextureType_HEIGHT");
+	ShowMaterialTextureInfo(material, aiTextureType_NORMALS, "aiTextureType_NORMALS");
+	ShowMaterialTextureInfo(material, aiTextureType_SHININESS, "aiTextureType_SHININESS");
+	ShowMaterialTextureInfo(material, aiTextureType_OPACITY, "aiTextureType_OPACITY");
+	ShowMaterialTextureInfo(material, aiTextureType_DISPLACEMENT, "aiTextureType_DISPLACEMENT");
+	ShowMaterialTextureInfo(material, aiTextureType_LIGHTMAP, "aiTextureType_LIGHTMAP");
+	ShowMaterialTextureInfo(material, aiTextureType_REFLECTION, "aiTextureType_REFLECTION");
+	ShowMaterialTextureInfo(material, aiTextureType_UNKNOWN, "aiTextureType_UNKNOWN");
+}
+
+void ShowMaterialTextureInfo(const aiMaterial *material, aiTextureType type, const std::string &typeText)
+{
+	aiString textureFile;
+
+	unsigned int count = material->GetTextureCount(type);
+	if (count > 0)
+	{
+		printf("    %s: %d\n", typeText.c_str(), count);
+		for (unsigned int i = 0; i < count; ++i)
+		{
+			material->Get(AI_MATKEY_TEXTURE(type, i), textureFile);
+			printf("        %s\n", textureFile.data);
+		}
+	}
 }
 
 void ShowAnimationInfo(const aiAnimation *animation)
