@@ -22,6 +22,9 @@ void CollectVerticesInMesh(
 	AssimpVertices &texCoordsBucket,
 	AssimpVertexIndices &indexMapping)
 {
+	bool hasTexCoords = mesh->HasTextureCoords(0);
+	bool hasNormals = mesh->HasNormals();
+
 	indexMapping.resize(mesh->mNumVertices);
 
 	for (unsigned int i = 0; i < mesh->mNumVertices; ++i)
@@ -41,10 +44,16 @@ void CollectVerticesInMesh(
 
 			// also copy the normal and tex coord into the appropriate buckets
 			// TODO: check if mesh has normals and/or tex coords first!
-			aiVector3D normal = mesh->mNormals[i];
-			normalsBucket.push_back(normal);
-			aiVector3D texCoord = mesh->mTextureCoords[0][i];
-			texCoordsBucket.push_back(texCoord);
+			if (hasNormals)
+			{
+				aiVector3D normal = mesh->mNormals[i];
+				normalsBucket.push_back(normal);
+			}
+			if (hasTexCoords)
+			{
+				aiVector3D texCoord = mesh->mTextureCoords[0][i];
+				texCoordsBucket.push_back(texCoord);
+			}
 		}
 
 		// stating the obvious so when i come back here and read this, i know instantly
