@@ -56,7 +56,11 @@ int main(int argc, char *argv[])
 		aiProcess_RemoveRedundantMaterials | 
 		aiProcess_SortByPType | 
 		aiProcess_OptimizeMeshes | 
-		aiProcess_OptimizeGraph
+		aiProcess_OptimizeGraph | 
+		aiProcess_GenUVCoords |
+		aiProcess_TransformUVCoords |
+		aiProcess_FlipUVs |
+		aiProcess_FindInvalidData
 		);
 
 	if (!scene)
