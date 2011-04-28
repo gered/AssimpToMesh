@@ -29,7 +29,11 @@ void CollectVerticesInMesh(
 		unsigned int matchingIndex = 0;
 		aiVector3D vertex = mesh->mVertices[i];
 
-		if (!FindVertex(vertex, verticesBucket, matchingIndex))
+		// TODO: this seems to not work quite so well... might have something to do with the
+		//       fact that ASSIMP is already taking care of duplicate vertices and indexing as
+		//       appropriate? the problem seems to be only with tex coords though....
+		//if (!FindVertex(vertex, verticesBucket, matchingIndex))
+		if (true)
 		{
 			// vertex isn't in the bucket already, add it, and then record mapping between the mesh vertex index and the bucket vertex index
 			verticesBucket.push_back(vertex);
