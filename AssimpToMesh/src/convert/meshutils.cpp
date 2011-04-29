@@ -198,3 +198,105 @@ void WriteSubMeshes(const std::vector<SubMesh> &subMeshes, FILE *fp)
 		fwrite(&m->numTriangles, 4, 1, fp);
 	}
 }
+
+void WriteJoints(const std::vector<MeshJoint> &joints, FILE *fp)
+{
+	uint32_t count = joints.size();
+	if (count == 0)
+		return;
+
+	uint32_t size = 4 +             // count
+		(
+			(sizeof(float) * 3) +   // position (x, y, z)
+			(sizeof(float) * 4)     // rotation (x, y, z, w)
+		) * count;
+
+	// add up all the variable length joint names and parent joint names
+	for (uint32_t i = 0; i < count; ++i)
+	{
+		size += joints[i].name.length() + 1;     // include null terminator
+		size += joints[i].name.length() + 1;     // ditto
+	}
+
+	fputs("JNT", fp);
+	fwrite(&size, 4, 1, fp);
+	fwrite(&count, 4, 1, fp);
+	for (uint32_t i = 0; i < count; ++i)
+	{
+		const MeshJoint *j = &joints[i];
+
+		fwrite(j->name.c_str(), j->name.length(), 1, fp);
+		char c = '\0';
+		fwrite(&c, 1, 1, fp);
+
+		// haven't tried, but i have a feeling fwrite() won't like passing a length of 0 to be written
+		if (j->parentName.length() > 0)
+			fwrite(j->parentName.c_str(), j->parentName.length(), 1, fp);
+		fwrite(&c, 1, 1, fp);
+
+		fwrite(&j->position.x, sizeof(float), 1, fp);
+		fwrite(&j->position.y, sizeof(float), 1, fp);
+		fwrite(&j->position.z, sizeof(float), 1, fp);
+
+		fwrite(&j->rotation.x, sizeof(float), 1, fp);
+		fwrite(&j->rotation.y, sizeof(float), 1, fp);
+		fwrite(&j->rotation.z, sizeof(float), 1, fp);
+		fwrite(&j->rotation.w, sizeof(float), 1, fp);
+	}
+}
+
+void WriteJointToVertexMap(const std::vector<uint32_t> &vertexToJointMap, FILE *fp)
+{
+	uint32_t count = vertexToJointMap.size();
+	if (count == 0)
+		return;
+
+	uint32_t size = 4 +      // count
+		(4 * count);         // num vertices
+
+	fputs("JTV", fp);
+	fwrite(&size, 4, 1, fp);
+	fwrite(&count, 4, 1, fp);
+	for (uint32_t i = 0; i < count; ++i)
+	{
+		uint32_t jointIndex = vertexToJointMap[i];
+		fwrite(&jointIndex, 4, 1, fp);
+	}
+}
+
+void WriteJointKeyFrames(const std::vector<JointKeyFrames> &jointKeyFrames, FILE *fp)
+{
+	uint32_t numJoints = jointKeyFrames.size();
+	if (numJoints == 0)
+		return;
+
+	uint32_t numFrames = jointKeyFrames[0].size();
+
+	uint32_t size = 4 +                 // num frames
+		(
+			(
+				(sizeof(float) * 3) +   // position (x, y, z)
+				(sizeof(float) * 4)     // rotation (x, y, z, w)
+				) * numJoints           // for each joint
+		) * numFrames;                  // for each frame
+
+	fputs("JKF", fp);
+	fwrite(&size, 4, 1, fp);
+	fwrite(&numFrames, 4, 1, fp);
+	for (uint32_t i = 0; i < numJoints; ++i)
+	{
+		for (uint32_t j = 0; j < numFrames; ++j)
+		{
+			const MeshJointKeyFrame *frame = &jointKeyFrames[i][j];
+
+			fwrite(&frame->position.x, sizeof(float), 1, fp);
+			fwrite(&frame->position.y, sizeof(float), 1, fp);
+			fwrite(&frame->position.z, sizeof(float), 1, fp);
+
+			fwrite(&frame->rotation.x, sizeof(float), 1, fp);
+			fwrite(&frame->rotation.y, sizeof(float), 1, fp);
+			fwrite(&frame->rotation.z, sizeof(float), 1, fp);
+			fwrite(&frame->rotation.w, sizeof(float), 1, fp);
+		}
+	}
+}

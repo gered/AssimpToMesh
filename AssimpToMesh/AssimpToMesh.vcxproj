@@ -94,6 +94,7 @@
     <ClInclude Include="src\assimputils\utils.h" />
     <ClInclude Include="src\convert\convert.h" />
     <ClInclude Include="src\convert\mesh.h" />
+    <ClInclude Include="src\convert\meshjoint.h" />
     <ClInclude Include="src\convert\meshmaterial.h" />
     <ClInclude Include="src\convert\meshtriangle.h" />
     <ClInclude Include="src\convert\submesh.h" />
