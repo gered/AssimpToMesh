@@ -207,16 +207,14 @@ void WriteJoints(const std::vector<MeshJoint> &joints, FILE *fp)
 
 	uint32_t size = 4 +             // count
 		(
+			4 +                     // parent joint index
 			(sizeof(float) * 3) +   // position (x, y, z)
 			(sizeof(float) * 4)     // rotation (x, y, z, w)
 		) * count;
 
-	// add up all the variable length joint names and parent joint names
+	// add up all the variable length joint names
 	for (uint32_t i = 0; i < count; ++i)
-	{
 		size += joints[i].name.length() + 1;       // include null terminator
-		size += joints[i].parentName.length() + 1; // ditto
-	}
 
 	fputs("JNT", fp);
 	fwrite(&size, 4, 1, fp);
