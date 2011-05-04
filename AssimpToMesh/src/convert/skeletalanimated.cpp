@@ -95,7 +95,10 @@ void ConvertSkeletalAnimated(const std::string &outfile, const aiScene *scene)
 				joint.parentName = "";
 			else
 				joint.parentName = std::string(parentNode->mName.data, parentNode->mName.length);
-			node->mTransformation.DecomposeNoScaling(joint.rotation, joint.position);
+
+			aiMatrix4x4 transform = node->mTransformation * bone->mOffsetMatrix;
+			node->mTransformation.DecomposeNoScaling(joint.localRotation, joint.localPosition);
+			bone->mOffsetMatrix.DecomposeNoScaling(joint.offsetRotation, joint.offsetPosition);
 
 			// assumption: sum of all bone->mNumWeights is always == vertices.size()
 			for (unsigned int k = 0; k < bone->mNumWeights; ++k)

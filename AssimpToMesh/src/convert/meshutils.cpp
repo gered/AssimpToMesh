@@ -229,19 +229,17 @@ void WriteJoints(const std::vector<MeshJoint> &joints, FILE *fp)
 		char c = '\0';
 		fwrite(&c, 1, 1, fp);
 
-		// haven't tried, but i have a feeling fwrite() won't like passing a length of 0 to be written
-		if (j->parentName.length() > 0)
-			fwrite(j->parentName.c_str(), j->parentName.length(), 1, fp);
-		fwrite(&c, 1, 1, fp);
+		int32_t parentIndex = GetIndexOf(joints, j->parentName);
+		fwrite(&parentIndex, 4, 1, fp);
 
-		fwrite(&j->position.x, sizeof(float), 1, fp);
-		fwrite(&j->position.y, sizeof(float), 1, fp);
-		fwrite(&j->position.z, sizeof(float), 1, fp);
+		fwrite(&j->localPosition.x, sizeof(float), 1, fp);
+		fwrite(&j->localPosition.y, sizeof(float), 1, fp);
+		fwrite(&j->localPosition.z, sizeof(float), 1, fp);
 
-		fwrite(&j->rotation.x, sizeof(float), 1, fp);
-		fwrite(&j->rotation.y, sizeof(float), 1, fp);
-		fwrite(&j->rotation.z, sizeof(float), 1, fp);
-		fwrite(&j->rotation.w, sizeof(float), 1, fp);
+		fwrite(&j->localRotation.x, sizeof(float), 1, fp);
+		fwrite(&j->localRotation.y, sizeof(float), 1, fp);
+		fwrite(&j->localRotation.z, sizeof(float), 1, fp);
+		fwrite(&j->localRotation.w, sizeof(float), 1, fp);
 	}
 }
 
@@ -299,4 +297,16 @@ void WriteJointKeyFrames(const std::vector<JointKeyFrames> &jointKeyFrames, FILE
 			fwrite(&frame->rotation.w, sizeof(float), 1, fp);
 		}
 	}
+}
+
+
+int32_t GetIndexOf(const std::vector<MeshJoint> &joints, const std::string &name)
+{
+	for (uint32_t i = 0; i < joints.size(); ++i)
+	{
+		if (joints[i].name == name)
+			return i;
+	}
+
+	return -1;
 }

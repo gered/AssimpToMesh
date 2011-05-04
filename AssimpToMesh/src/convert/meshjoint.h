@@ -11,8 +11,10 @@ struct MeshJoint
 {
 	std::string name;
 	std::string parentName;
-	aiVector3D position;
-	aiQuaternion rotation;
+	aiVector3D localPosition;
+	aiQuaternion localRotation;
+	aiVector3D offsetPosition;
+	aiQuaternion offsetRotation;
 };
 
 struct MeshJointKeyFrame
@@ -22,5 +24,7 @@ struct MeshJointKeyFrame
 };
 
 typedef std::vector<MeshJointKeyFrame> JointKeyFrames;
+
+int32_t GetIndexOf(const std::vector<MeshJoint> &joints, const std::string &name);
 
 #endif
