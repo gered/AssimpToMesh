@@ -95,9 +95,10 @@ void WalkNode(const aiNode *node)
 		printf("]");
 	}
 	printf("\n");
-	printf("%sRotation:     %f, %f, %f, %f\n", indent.c_str(), rotation.x, rotation.y, rotation.z, rotation.w);
-	printf("%sScaling:      %f, %f, %f\n", indent.c_str(), scaling.x, scaling.y, scaling.z);
-	printf("%sPosition:     %f, %f, %f\n", indent.c_str(), position.x, position.y, position.z);
+	printf("%smTransformation:\n", indent.c_str());
+	printf("%s - Rotation:     %f, %f, %f, %f\n", indent.c_str(), rotation.x, rotation.y, rotation.z, rotation.w);
+	printf("%s - Scaling:      %f, %f, %f\n", indent.c_str(), scaling.x, scaling.y, scaling.z);
+	printf("%s - Position:     %f, %f, %f\n", indent.c_str(), position.x, position.y, position.z);
 
 	for (unsigned int i = 0; i < node->mNumChildren; ++i)
 		WalkNode(node->mChildren[i]);
@@ -132,6 +133,7 @@ void ShowMeshInfo(const aiMesh *mesh, const aiScene *scene)
 	printf("    mNumUVComponents:         %d, %d, %d, %d\n", mesh->mNumUVComponents[0], mesh->mNumUVComponents[1], mesh->mNumUVComponents[2], mesh->mNumUVComponents[3]);
 	printf("    mNumBones:                %d\n", mesh->mNumBones);
 	printf("    mNumAnimMeshes:           %d\n", mesh->mNumAnimMeshes);
+	printf("    mBones:\n");
 	for (unsigned int i = 0; i < mesh->mNumBones; ++i)
 	{
 		aiBone *bone = mesh->mBones[i];
@@ -154,9 +156,10 @@ void ShowMeshInfo(const aiMesh *mesh, const aiScene *scene)
 		printf("            Name:        %s\n", bone->mName.data);
 		printf("            Parent Name: %s\n", parentName.data);
 		printf("            mNumWeights: %d\n", bone->mNumWeights);
-		printf("            Rotation:    %f, %f, %f, %f\n", rotation.x, rotation.y, rotation.z, rotation.w);
-		printf("            Scaling:     %f, %f, %f\n", scaling.x, scaling.y, scaling.z);
-		printf("            Position:    %f, %f, %f\n", position.x, position.y, position.z);
+		printf("            mOffsetMatrix:\n");
+		printf("             - Rotation:    %f, %f, %f, %f\n", rotation.x, rotation.y, rotation.z, rotation.w);
+		printf("             - Scaling:     %f, %f, %f\n", scaling.x, scaling.y, scaling.z);
+		printf("             - Position:    %f, %f, %f\n", position.x, position.y, position.z);
 	}
 }
 
@@ -224,6 +227,7 @@ void ShowAnimationInfo(const aiAnimation *animation)
 	printf("    mDuration:        %f\n", animation->mDuration);
 	printf("    mTicksPerSecond:  %f\n", animation->mTicksPerSecond);
 	printf("    mNumChannels:     %d\n", animation->mNumChannels);
+	printf("    mChannels:\n");
 	for (unsigned int i = 0; i < animation->mNumChannels; ++i)
 	{
 		aiNodeAnim *channel = animation->mChannels[i];
@@ -235,6 +239,7 @@ void ShowAnimationInfo(const aiAnimation *animation)
 		printf("            mNumScalingKeys:  %d\n", channel->mNumScalingKeys);
 	}
 	printf("    mNumMeshChannels: %d\n", animation->mNumMeshChannels);
+	printf("    mMeshChannels:\n");
 	for (unsigned int i = 0; i < animation->mNumMeshChannels; ++i)
 	{
 		aiMeshAnim *channel = animation->mMeshChannels[i];
