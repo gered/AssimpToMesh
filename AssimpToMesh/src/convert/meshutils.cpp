@@ -208,8 +208,10 @@ void WriteJoints(const std::vector<MeshJoint> &joints, FILE *fp)
 	uint32_t size = 4 +             // count
 		(
 			4 +                     // parent joint index
-			(sizeof(float) * 3) +   // position (x, y, z)
-			(sizeof(float) * 4)     // rotation (x, y, z, w)
+			(sizeof(float) * 3) +   // local position (x, y, z)
+			(sizeof(float) * 4) +   // local rotation (x, y, z, w)
+			(sizeof(float) * 3) +   // offset position (x, y, z)
+			(sizeof(float) * 4)     // offset rotation (x, y, z, w)
 		) * count;
 
 	// add up all the variable length joint names
@@ -238,6 +240,15 @@ void WriteJoints(const std::vector<MeshJoint> &joints, FILE *fp)
 		fwrite(&j->localRotation.y, sizeof(float), 1, fp);
 		fwrite(&j->localRotation.z, sizeof(float), 1, fp);
 		fwrite(&j->localRotation.w, sizeof(float), 1, fp);
+
+		fwrite(&j->offsetPosition.x, sizeof(float), 1, fp);
+		fwrite(&j->offsetPosition.y, sizeof(float), 1, fp);
+		fwrite(&j->offsetPosition.z, sizeof(float), 1, fp);
+
+		fwrite(&j->offsetRotation.x, sizeof(float), 1, fp);
+		fwrite(&j->offsetRotation.y, sizeof(float), 1, fp);
+		fwrite(&j->offsetRotation.z, sizeof(float), 1, fp);
+		fwrite(&j->offsetRotation.w, sizeof(float), 1, fp);
 	}
 }
 
