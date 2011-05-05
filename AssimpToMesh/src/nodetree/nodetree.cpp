@@ -243,6 +243,15 @@ void ShowAnimationInfo(const aiAnimation *animation)
 		fprintf(g_fp, "            mNumPositionKeys: %d\n", channel->mNumPositionKeys);
 		fprintf(g_fp, "            mNumRotationKeys: %d\n", channel->mNumRotationKeys);
 		fprintf(g_fp, "            mNumScalingKeys:  %d\n", channel->mNumScalingKeys);
+		fprintf(g_fp, "            mPositionKeys:\n");
+		for (unsigned int i = 0; i < channel->mNumPositionKeys; ++i)
+			fprintf(g_fp, "                [%d] %f, %f, %f\n", i, channel->mPositionKeys[i].mValue.x, channel->mPositionKeys[i].mValue.y, channel->mPositionKeys[i].mValue.z);
+		fprintf(g_fp, "            mRotationKeys:\n");
+		for (unsigned int i = 0; i < channel->mNumPositionKeys; ++i)
+			fprintf(g_fp, "                [%d] %f, %f, %f\n", i, channel->mRotationKeys[i].mValue.x, channel->mRotationKeys[i].mValue.y, channel->mRotationKeys[i].mValue.z, channel->mRotationKeys[i].mValue.w);
+		fprintf(g_fp, "            mScalingKeys:\n");
+		for (unsigned int i = 0; i < channel->mNumScalingKeys; ++i)
+			fprintf(g_fp, "                [%d] %f, %f, %f\n", i, channel->mScalingKeys[i].mValue.x, channel->mScalingKeys[i].mValue.y, channel->mScalingKeys[i].mValue.z);
 	}
 	fprintf(g_fp, "    mNumMeshChannels: %d\n", animation->mNumMeshChannels);
 	fprintf(g_fp, "    mMeshChannels:\n");
