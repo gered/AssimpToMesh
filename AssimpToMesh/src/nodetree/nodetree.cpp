@@ -10,6 +10,7 @@ void ShowMaterialTextureInfo(const aiMaterial *material, aiTextureType type, con
 void ShowAnimationInfo(const aiAnimation *animation);
 
 unsigned int g_level;
+FILE *g_fp = NULL;
 
 std::string GetIndentString()
 {
@@ -19,59 +20,64 @@ std::string GetIndentString()
 	return indent;
 }
 
-void Walk(const aiScene *scene)
+void Walk(const aiScene *scene, const std::string &filename)
 {
 	g_level = 0;
 
-	printf("\n*** GENERAL SCENE INFO ***\n\n");
-	printf("HasAnimations:  %s\n", scene->HasAnimations() ? "yes" : "no");
-	printf("HasMaterials:   %s\n", scene->HasMaterials() ? "yes" : "no");
-	printf("HasMeshes:      %s\n", scene->HasMeshes() ? "yes" : "no");
-	printf("mNumAnimations: %d\n", scene->mNumAnimations);
-	printf("mNumMaterials:  %d\n", scene->mNumMaterials);
-	printf("mNumMeshes:     %d\n", scene->mNumMeshes);
-	printf("\n");
+	g_fp = fopen(filename.c_str(), "w");
+	if (g_fp == NULL)
+		throw std::exception("Error creating description output file.");
+
+	fprintf(g_fp, "\n*** GENERAL SCENE INFO ***\n\n");
+	fprintf(g_fp, "HasAnimations:  %s\n", scene->HasAnimations() ? "yes" : "no");
+	fprintf(g_fp, "HasMaterials:   %s\n", scene->HasMaterials() ? "yes" : "no");
+	fprintf(g_fp, "HasMeshes:      %s\n", scene->HasMeshes() ? "yes" : "no");
+	fprintf(g_fp, "mNumAnimations: %d\n", scene->mNumAnimations);
+	fprintf(g_fp, "mNumMaterials:  %d\n", scene->mNumMaterials);
+	fprintf(g_fp, "mNumMeshes:     %d\n", scene->mNumMeshes);
+	fprintf(g_fp, "\n");
 
 	if (scene->mNumMaterials > 0)
 	{
-		printf("\n*** MATERIALS ***\n\n");
+		fprintf(g_fp, "\n*** MATERIALS ***\n\n");
 
 		for (unsigned int i = 0; i < scene->mNumMaterials; ++i)
 		{
-			printf("[%d]:\n", i);
+			fprintf(g_fp, "[%d]:\n", i);
 			ShowMaterialInfo(scene->mMaterials[i]);
 		}
 	}
 
-	printf("\n*** MESHES ***\n\n");
+	fprintf(g_fp, "\n*** MESHES ***\n\n");
 
 	for (unsigned int i = 0; i < scene->mNumMeshes; ++i)
 	{
-		printf("[%d]\n", i);
+		fprintf(g_fp, "[%d]\n", i);
 		ShowMeshInfo(scene->mMeshes[i], scene);
 	}
 
-	printf("\n*** NODES ***\n");
+	fprintf(g_fp, "\n*** NODES ***\n");
 	WalkNode(scene->mRootNode);
 
 	if (scene->mNumAnimations > 0)
 	{
-		printf("\n*** ANIMATIONS ***\n\n");
+		fprintf(g_fp, "\n*** ANIMATIONS ***\n\n");
 
 		for (unsigned int i = 0; i < scene->mNumAnimations; ++i)
 		{
-			printf("[%d]:\n", i);
+			fprintf(g_fp, "[%d]:\n", i);
 			ShowAnimationInfo(scene->mAnimations[i]);
 		}
 	}
 
-	printf("\n");
+	fclose(g_fp);
+	g_fp = NULL;
 }
 
 void WalkNode(const aiNode *node)
 {
 	++g_level;
-	printf("\n");
+	fprintf(g_fp, "\n");
 
 	std::string indent = GetIndentString();
 
@@ -80,25 +86,25 @@ void WalkNode(const aiNode *node)
 	aiVector3D position;
 	node->mTransformation.Decompose(scaling, rotation, position);
 
-	printf("%sName:         %s\n", indent.c_str(), node->mName.data);
-	printf("%smNumChildren: %d\n", indent.c_str(), node->mNumChildren);
-	printf("%smNumMeshes:   %d", indent.c_str(), node->mNumMeshes);
+	fprintf(g_fp, "%sName:         %s\n", indent.c_str(), node->mName.data);
+	fprintf(g_fp, "%smNumChildren: %d\n", indent.c_str(), node->mNumChildren);
+	fprintf(g_fp, "%smNumMeshes:   %d", indent.c_str(), node->mNumMeshes);
 	if (node->mNumMeshes > 0)
 	{
-		printf(" [");
+		fprintf(g_fp, " [");
 		for (unsigned int i = 0; i < node->mNumMeshes; ++i)
 		{
 			if (i > 0)
-				printf(", ");
-			printf("%d", node->mMeshes[i]);
+				fprintf(g_fp, ", ");
+			fprintf(g_fp, "%d", node->mMeshes[i]);
 		}
-		printf("]");
+		fprintf(g_fp, "]");
 	}
-	printf("\n");
-	printf("%smTransformation:\n", indent.c_str());
-	printf("%s - Rotation:     %f, %f, %f, %f\n", indent.c_str(), rotation.x, rotation.y, rotation.z, rotation.w);
-	printf("%s - Scaling:      %f, %f, %f\n", indent.c_str(), scaling.x, scaling.y, scaling.z);
-	printf("%s - Position:     %f, %f, %f\n", indent.c_str(), position.x, position.y, position.z);
+	fprintf(g_fp, "\n");
+	fprintf(g_fp, "%smTransformation:\n", indent.c_str());
+	fprintf(g_fp, "%s - Rotation:     %f, %f, %f, %f\n", indent.c_str(), rotation.x, rotation.y, rotation.z, rotation.w);
+	fprintf(g_fp, "%s - Scaling:      %f, %f, %f\n", indent.c_str(), scaling.x, scaling.y, scaling.z);
+	fprintf(g_fp, "%s - Position:     %f, %f, %f\n", indent.c_str(), position.x, position.y, position.z);
 
 	for (unsigned int i = 0; i < node->mNumChildren; ++i)
 		WalkNode(node->mChildren[i]);
@@ -108,32 +114,32 @@ void WalkNode(const aiNode *node)
 
 void ShowMeshInfo(const aiMesh *mesh, const aiScene *scene)
 {
-	printf("    Name:                     %s\n", mesh->mName.data);
-	printf("    HasBones:                 %s\n", mesh->HasBones() ? "yes" : "no");
-	printf("    HasFaces:                 %s\n", mesh->HasFaces() ? "yes" : "no");
-	printf("    HasNormals:               %s\n", mesh->HasNormals() ? "yes" : "no");
-	printf("    HasPositions:             %s\n", mesh->HasPositions() ? "yes" : "no");
-	printf("    HasTangentsAndBitangents: %s\n", mesh->HasTangentsAndBitangents() ? "yes" : "no");
-	printf("    HasTextureCoords:         %s, %s, %s, %s\n",
+	fprintf(g_fp, "    Name:                     %s\n", mesh->mName.data);
+	fprintf(g_fp, "    HasBones:                 %s\n", mesh->HasBones() ? "yes" : "no");
+	fprintf(g_fp, "    HasFaces:                 %s\n", mesh->HasFaces() ? "yes" : "no");
+	fprintf(g_fp, "    HasNormals:               %s\n", mesh->HasNormals() ? "yes" : "no");
+	fprintf(g_fp, "    HasPositions:             %s\n", mesh->HasPositions() ? "yes" : "no");
+	fprintf(g_fp, "    HasTangentsAndBitangents: %s\n", mesh->HasTangentsAndBitangents() ? "yes" : "no");
+	fprintf(g_fp, "    HasTextureCoords:         %s, %s, %s, %s\n",
 		(mesh->HasTextureCoords(0) ? "yes" : "no"),
 		(mesh->HasTextureCoords(1) ? "yes" : "no"),
 		(mesh->HasTextureCoords(2) ? "yes" : "no"),
 		(mesh->HasTextureCoords(3) ? "yes" : "no")
 		);
-	printf("    HasVertexColors:          %s, %s, %s, %s\n",
+	fprintf(g_fp, "    HasVertexColors:          %s, %s, %s, %s\n",
 		(mesh->HasVertexColors(0) ? "yes" : "no"),
 		(mesh->HasVertexColors(1) ? "yes" : "no"),
 		(mesh->HasVertexColors(2) ? "yes" : "no"),
 		(mesh->HasVertexColors(3) ? "yes" : "no")
 		);
-	printf("    mMaterialIndex:           %d\n", mesh->mMaterialIndex);
-	printf("    mNumFaces:                %d\n", mesh->mNumFaces);
-	printf("    mPrimitiveTypes:          %d - (All Triangles? %s)\n", mesh->mPrimitiveTypes, mesh->mPrimitiveTypes == aiPrimitiveType_TRIANGLE ? "yes" : "no");
-	printf("    mNumVertices:             %d\n", mesh->mNumVertices);
-	printf("    mNumUVComponents:         %d, %d, %d, %d\n", mesh->mNumUVComponents[0], mesh->mNumUVComponents[1], mesh->mNumUVComponents[2], mesh->mNumUVComponents[3]);
-	printf("    mNumBones:                %d\n", mesh->mNumBones);
-	printf("    mNumAnimMeshes:           %d\n", mesh->mNumAnimMeshes);
-	printf("    mBones:\n");
+	fprintf(g_fp, "    mMaterialIndex:           %d\n", mesh->mMaterialIndex);
+	fprintf(g_fp, "    mNumFaces:                %d\n", mesh->mNumFaces);
+	fprintf(g_fp, "    mPrimitiveTypes:          %d - (All Triangles? %s)\n", mesh->mPrimitiveTypes, mesh->mPrimitiveTypes == aiPrimitiveType_TRIANGLE ? "yes" : "no");
+	fprintf(g_fp, "    mNumVertices:             %d\n", mesh->mNumVertices);
+	fprintf(g_fp, "    mNumUVComponents:         %d, %d, %d, %d\n", mesh->mNumUVComponents[0], mesh->mNumUVComponents[1], mesh->mNumUVComponents[2], mesh->mNumUVComponents[3]);
+	fprintf(g_fp, "    mNumBones:                %d\n", mesh->mNumBones);
+	fprintf(g_fp, "    mNumAnimMeshes:           %d\n", mesh->mNumAnimMeshes);
+	fprintf(g_fp, "    mBones:\n");
 	for (unsigned int i = 0; i < mesh->mNumBones; ++i)
 	{
 		aiBone *bone = mesh->mBones[i];
@@ -152,14 +158,14 @@ void ShowMeshInfo(const aiMesh *mesh, const aiScene *scene)
 				parentName = parent->mName;
 		}
 
-		printf("        [%d]\n", i);
-		printf("            Name:        %s\n", bone->mName.data);
-		printf("            Parent Name: %s\n", parentName.data);
-		printf("            mNumWeights: %d\n", bone->mNumWeights);
-		printf("            mOffsetMatrix:\n");
-		printf("             - Rotation:    %f, %f, %f, %f\n", rotation.x, rotation.y, rotation.z, rotation.w);
-		printf("             - Scaling:     %f, %f, %f\n", scaling.x, scaling.y, scaling.z);
-		printf("             - Position:    %f, %f, %f\n", position.x, position.y, position.z);
+		fprintf(g_fp, "        [%d]\n", i);
+		fprintf(g_fp, "            Name:        %s\n", bone->mName.data);
+		fprintf(g_fp, "            Parent Name: %s\n", parentName.data);
+		fprintf(g_fp, "            mNumWeights: %d\n", bone->mNumWeights);
+		fprintf(g_fp, "            mOffsetMatrix:\n");
+		fprintf(g_fp, "             - Rotation:    %f, %f, %f, %f\n", rotation.x, rotation.y, rotation.z, rotation.w);
+		fprintf(g_fp, "             - Scaling:     %f, %f, %f\n", scaling.x, scaling.y, scaling.z);
+		fprintf(g_fp, "             - Position:    %f, %f, %f\n", position.x, position.y, position.z);
 	}
 }
 
@@ -182,13 +188,13 @@ void ShowMaterialInfo(const aiMaterial *material)
 	material->Get(AI_MATKEY_SHININESS, shininess);
 	material->Get(AI_MATKEY_OPACITY, opacity);
 
-	printf("    Name:      %s\n", name.data);
-	printf("    Ambient:   %f, %f, %f\n", ambient.r, ambient.g, ambient.b);
-	printf("    Diffuse:   %f, %f, %f\n", diffuse.r, diffuse.g, diffuse.b);
-	printf("    Specular:  %f, %f, %f\n", specular.r, specular.g, specular.b);
-	printf("    Emissive:  %f, %f, %f\n", emissive.r, emissive.g, emissive.b);
-	printf("    Shininess: %f\n", shininess);
-	printf("    Opacity:   %f\n", opacity);
+	fprintf(g_fp, "    Name:      %s\n", name.data);
+	fprintf(g_fp, "    Ambient:   %f, %f, %f\n", ambient.r, ambient.g, ambient.b);
+	fprintf(g_fp, "    Diffuse:   %f, %f, %f\n", diffuse.r, diffuse.g, diffuse.b);
+	fprintf(g_fp, "    Specular:  %f, %f, %f\n", specular.r, specular.g, specular.b);
+	fprintf(g_fp, "    Emissive:  %f, %f, %f\n", emissive.r, emissive.g, emissive.b);
+	fprintf(g_fp, "    Shininess: %f\n", shininess);
+	fprintf(g_fp, "    Opacity:   %f\n", opacity);
 
 	ShowMaterialTextureInfo(material, aiTextureType_NONE, "aiTextureType_NONE");
 	ShowMaterialTextureInfo(material, aiTextureType_DIFFUSE, "aiTextureType_DIFFUSE");
@@ -212,40 +218,40 @@ void ShowMaterialTextureInfo(const aiMaterial *material, aiTextureType type, con
 	unsigned int count = material->GetTextureCount(type);
 	if (count > 0)
 	{
-		printf("    %s: %d\n", typeText.c_str(), count);
+		fprintf(g_fp, "    %s: %d\n", typeText.c_str(), count);
 		for (unsigned int i = 0; i < count; ++i)
 		{
 			material->Get(AI_MATKEY_TEXTURE(type, i), textureFile);
-			printf("        %s\n", textureFile.data);
+			fprintf(g_fp, "        %s\n", textureFile.data);
 		}
 	}
 }
 
 void ShowAnimationInfo(const aiAnimation *animation)
 {
-	printf("    Name:             %s\n", animation->mName.data);
-	printf("    mDuration:        %f\n", animation->mDuration);
-	printf("    mTicksPerSecond:  %f\n", animation->mTicksPerSecond);
-	printf("    mNumChannels:     %d\n", animation->mNumChannels);
-	printf("    mChannels:\n");
+	fprintf(g_fp, "    Name:             %s\n", animation->mName.data);
+	fprintf(g_fp, "    mDuration:        %f\n", animation->mDuration);
+	fprintf(g_fp, "    mTicksPerSecond:  %f\n", animation->mTicksPerSecond);
+	fprintf(g_fp, "    mNumChannels:     %d\n", animation->mNumChannels);
+	fprintf(g_fp, "    mChannels:\n");
 	for (unsigned int i = 0; i < animation->mNumChannels; ++i)
 	{
 		aiNodeAnim *channel = animation->mChannels[i];
 
-		printf("        [%d]:\n", i);
-		printf("            Name:             %s\n", channel->mNodeName.data);
-		printf("            mNumPositionKeys: %d\n", channel->mNumPositionKeys);
-		printf("            mNumRotationKeys: %d\n", channel->mNumRotationKeys);
-		printf("            mNumScalingKeys:  %d\n", channel->mNumScalingKeys);
+		fprintf(g_fp, "        [%d]:\n", i);
+		fprintf(g_fp, "            Name:             %s\n", channel->mNodeName.data);
+		fprintf(g_fp, "            mNumPositionKeys: %d\n", channel->mNumPositionKeys);
+		fprintf(g_fp, "            mNumRotationKeys: %d\n", channel->mNumRotationKeys);
+		fprintf(g_fp, "            mNumScalingKeys:  %d\n", channel->mNumScalingKeys);
 	}
-	printf("    mNumMeshChannels: %d\n", animation->mNumMeshChannels);
-	printf("    mMeshChannels:\n");
+	fprintf(g_fp, "    mNumMeshChannels: %d\n", animation->mNumMeshChannels);
+	fprintf(g_fp, "    mMeshChannels:\n");
 	for (unsigned int i = 0; i < animation->mNumMeshChannels; ++i)
 	{
 		aiMeshAnim *channel = animation->mMeshChannels[i];
 
-		printf("        [%d]:\n", i);
-		printf("            Name:     %s\n", channel->mName.data);
-		printf("            mNumKeys: %d\n", channel->mNumKeys);
+		fprintf(g_fp, "        [%d]:\n", i);
+		fprintf(g_fp, "            Name:     %s\n", channel->mName.data);
+		fprintf(g_fp, "            mNumKeys: %d\n", channel->mNumKeys);
 	}
 }

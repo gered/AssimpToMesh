@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
 
 	if (argc == 1)
 	{
-		printf("Usage: assimptomesh.exe [--showinfo] [--out=outputfile] inputfile\n\n");
+		printf("Usage: assimptomesh.exe [--describe=txtfile] [--out=outputfile] inputfile\n\n");
 		return 0;
 	}
 
@@ -25,15 +25,22 @@ int main(int argc, char *argv[])
 	std::string file = argv[argc - 1];
 
 	std::string outputFile;
-	bool showInfo = false;
+	std::string describeFile;
 
 	// find any options
 	for (int i = 1; i < argc - 1; ++i)
 	{
 		std::string arg = argv[i];
 
-		if (arg == "--showinfo")
-			showInfo = true;
+		if (arg.substr(0, 11) == "--describe=")
+		{
+			if (arg.length() == 11)
+			{
+				printf("Missing description output filename.\n");
+				return 1;
+			}
+			describeFile = arg.substr(11);
+		}
 
 		else if (arg.substr(0, 6) == "--out=")
 		{
@@ -83,8 +90,18 @@ int main(int argc, char *argv[])
 	printf("Output file: %s\n", outputFile.c_str());
 
 	// optionally show info about the entire scene before doing the conversion
-	if (showInfo)
-		Walk(scene);
+	if (describeFile.length() > 0)
+	{
+		try
+		{
+			Walk(scene, describeFile);
+		}
+		catch (std::exception &ex)
+		{
+			printf("Error: %s\n", ex.what());
+			return 1;
+		}
+	}
 
 	// attempt conversion using an appropriate converter based on what kind of scene it is
 	if (IsSceneStatic(scene))
