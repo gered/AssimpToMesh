@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <string>
+#include <stdexcept>
 
 void WalkNode(const aiNode *node);
 void ShowMeshInfo(const aiMesh *mesh, const aiScene *scene);
@@ -26,7 +27,7 @@ void Walk(const aiScene *scene, const std::string &filename)
 
 	g_fp = fopen(filename.c_str(), "w");
 	if (g_fp == NULL)
-		throw std::exception("Error creating description output file.");
+		throw std::runtime_error("Error creating description output file.");
 
 	fprintf(g_fp, "\n*** GENERAL SCENE INFO ***\n\n");
 	fprintf(g_fp, "HasAnimations:  %s\n", scene->HasAnimations() ? "yes" : "no");
@@ -149,7 +150,7 @@ void ShowMeshInfo(const aiMesh *mesh, const aiScene *scene)
 		aiVector3D position;
 		bone->mOffsetMatrix.Decompose(scaling, rotation, position);
 
-		aiString parentName = "[null]";
+		aiString parentName = aiString("[null]");
 		aiNode *boneNode = scene->mRootNode->FindNode(bone->mName);
 		if (boneNode != NULL)
 		{

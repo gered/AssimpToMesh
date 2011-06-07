@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 #include <stdint.h>
-#include <exception>
+#include <stdexcept>
 
 #include "mesh.h"
 #include "../assimputils/utils.h"
@@ -11,7 +11,7 @@ void ConvertSkeletalAnimated(const std::string &outfile, const aiScene *scene)
 {
 	FILE *fp = fopen(outfile.c_str(), "wb");
 	if (fp == NULL)
-		throw std::exception("Error creating output file.");
+		throw std::runtime_error("Error creating output file.");
 
 	WriteMeshHeader(fp);
 

@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string>
-#include <exception>
+#include <stdexcept>
 
 #include <assimp/assimp.hpp>
 #include <assimp/aiScene.h>
