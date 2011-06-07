@@ -108,7 +108,7 @@ else
 $(OUTPUT): $(OFILES)
 	$(info linking $(notdir $@))
 	$(LD) -o $@ $(LDFLAGS) $(OFILES) $(LIBS)
-	cp $(OUTPUT) ../../
+	cp $(OUTPUT) ../
 
 
 
