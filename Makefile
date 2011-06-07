@@ -48,7 +48,7 @@ endif
 #-------------------------------------------------------------------------------
 ifeq ("$(BUILD)","Debug")
 DEFINES		:= -DDEBUG -DDEBUG_ASSERT_BREAK
-CFLAGS		:= $(DEFINES) -g -Wall -I/usr/include/assimp
+CFLAGS		:= $(DEFINES) -g -Wall
 CXXFLAGS	:= $(CFLAGS)
 LDFLAGS		:= $(PLATFORM_LD_FLAGS)
 LIBS		:= -g -lassimp
@@ -56,7 +56,7 @@ endif
 #-------------------------------------------------------------------------------
 ifeq ("$(BUILD)","Release")
 DEFINES		:= 
-CFLAGS		:= $(DEFINES) -O2 -Wall -I/usr/include/assimp
+CFLAGS		:= $(DEFINES) -O2 -Wall
 CXXFLAGS	:= $(CFLAGS)
 LDFLAGS		:= -O2 $(PLATFORM_LD_FLAGS)
 LIBS		:= -lassimp

@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 #include <string>
-#include <aiVector3D.h>
-#include <aiQuaternion.h>
+#include <assimp/aiVector3D.h>
+#include <assimp/aiQuaternion.h>
 #include <vector>
 
 struct MeshJoint

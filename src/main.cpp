@@ -2,9 +2,9 @@
 #include <string>
 #include <exception>
 
-#include <assimp.hpp>
-#include <aiScene.h>
-#include <aiPostProcess.h>
+#include <assimp/assimp.hpp>
+#include <assimp/aiScene.h>
+#include <assimp/aiPostProcess.h>
 
 #include "utils/utils.h"
 #include "assimputils/utils.h"
