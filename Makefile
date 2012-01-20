@@ -31,35 +31,52 @@ $(info $(CFG) configuration selected)
 #-------------------------------------------------------------------------------
 UNAME := $(shell uname)
 
+#-------------------------------------------------------------------------------
 # default windows libraries and options
 PLATFORM          := win32
+PLATFORM_CFLAGS   := 
 PLATFORM_LD_FLAGS := -static-libgcc -static-libstdc++
-
+PLATFORM_LIBS     := -lassimp
+PLATFORM_DEFINES  := 
+#-------------------------------------------------------------------------------
 ifeq ($(UNAME), Linux)
 # it appears that we're running on linux
 PLATFORM          := linux
+PLATFORM_CFLAGS   := 
 PLATFORM_LD_FLAGS := 
+PLATFORM_LIBS     := -lassimp
+PLATFORM_DEFINES  := 
 endif
-
-# TODO: other platform detection
+#-------------------------------------------------------------------------------
+ifeq ($(UNAME), Darwin)
+# NOTE: this is set up assuming Assimp was installed via Homebrew. Unfortunately
+#       the library version is included in the path, so this will have to be
+#       updated if we need to build against a newer version of Assimp
+PLATFORM          := osx
+PLATFORM_CFLAGS   := -I/usr/local/Cellar/assimp/2.0.863/include/
+PLATFORM_LD_FLAGS := -L/usr/local/Cellar/assimp/2.0.863/
+PLATFORM_LIBS     := -lassimp
+PLATFORM_DEFINES  := 
+endif
+#-------------------------------------------------------------------------------
 
 
 
 #-------------------------------------------------------------------------------
 ifeq ("$(BUILD)","Debug")
-DEFINES		:= -DDEBUG -DDEBUG_ASSERT_BREAK
-CFLAGS		:= $(DEFINES) -g -Wall
+DEFINES		:= -DDEBUG -DDEBUG_ASSERT_BREAK $(PLATFORM_DEFINES)
+CFLAGS		:= $(DEFINES) -g -Wall $(PLATFORM_CFLAGS)
 CXXFLAGS	:= $(CFLAGS)
 LDFLAGS		:= $(PLATFORM_LD_FLAGS)
-LIBS		:= -g -lassimp
+LIBS		:= -g $(PLATFORM_LIBS)
 endif
 #-------------------------------------------------------------------------------
 ifeq ("$(BUILD)","Release")
-DEFINES		:= 
-CFLAGS		:= $(DEFINES) -O2 -Wall
+DEFINES		:= $(PLATFORM_DEFINES)
+CFLAGS		:= $(DEFINES) -O2 -Wall $(PLATFORM_CFLAGS)
 CXXFLAGS	:= $(CFLAGS)
 LDFLAGS		:= -O2 $(PLATFORM_LD_FLAGS)
-LIBS		:= -lassimp
+LIBS		:= $(PLATFORM_LIBS)
 endif
 #-------------------------------------------------------------------------------
 
