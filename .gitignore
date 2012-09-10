@@ -4,7 +4,12 @@
 *.user
 *.suo
 /*.dll
+/*.exe
+/*.idb
+/*.ilk
+/*.pdb
 Debug/
 Release/
 ipch/
+/build
 assimptomesh
