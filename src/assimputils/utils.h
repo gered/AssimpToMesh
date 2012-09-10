@@ -1,8 +1,8 @@
 #ifndef __ASSIMPUTILS_UTILS_H_INCLUDED__
 #define __ASSIMPUTILS_UTILS_H_INCLUDED__
 
-#include <assimp/assimp.hpp>
-#include <assimp/aiScene.h>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
 
 #include <map>
 #include <vector>
