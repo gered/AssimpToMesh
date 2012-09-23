@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 #include <vector>
-#include <assimp/types.h>
+#include <assimp/aiTypes.h>
 #include "../assimputils/types.h"
 #include "meshmaterial.h"
 #include "meshtriangle.h"

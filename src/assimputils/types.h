@@ -1,7 +1,7 @@
 #ifndef __ASSIMPUTILS_TYPES_H_INCLUDED__
 #define __ASSIMPUTILS_TYPES_H_INCLUDED__
 
-#include <assimp/types.h>
+#include <assimp/aiTypes.h>
 #include <vector>
 #include <map>
 

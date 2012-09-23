@@ -2,7 +2,7 @@
 #define __CONVERT_MESHMATERIAL_H_INCLUDED__
 
 #include <string>
-#include <assimp/material.h>
+#include <assimp/aiMaterial.h>
 
 struct MeshMaterial
 {
