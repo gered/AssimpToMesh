@@ -3,7 +3,7 @@ ASSIMP_ROOT          = "/dev/assimp"
 --------------------------------------------------------------------------------
 -- For Mac OSX having installed assimp via Homebrew ----------------------------
 ASSIMP_OSX_INCLUDE_DIR = "/usr/local/Cellar/assimp/2.0.863/include"
-ASSIMP_OSX_LIB_DIR     = "/usr/local/Cellar/assimp/2.0.863/"
+ASSIMP_OSX_LIB_DIR     = "/usr/local/Cellar/assimp/2.0.863/lib"
 --------------------------------------------------------------------------------
 
 BUILD_DIR         = "build"
