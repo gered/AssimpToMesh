@@ -108,9 +108,6 @@
 				Name="LinkerOutputType"
 				Value="Executable"/>
 		</List>
-		<Includes>
-			<Include Dir="/usr/local/Cellar/assimp/2.0.863/include"/>
-		</Includes>
 		<Libs PreObjects="0"/>
 	</Config>
 	<Config
