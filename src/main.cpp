@@ -17,15 +17,17 @@ int main(int argc, char *argv[])
 
 	if (argc == 1)
 	{
-		printf("Usage: assimptomesh.exe [--describe=txtfile] [--out=outputfile] inputfile\n\n");
+		printf("Usage: assimptomesh.exe [--describe=txtfile] [--out=outputfile] [--scale=scalefactor] inputfile\n\n");
 		return 0;
 	}
 
 	// input file is always the last argument
 	std::string file = argv[argc - 1];
 
-	std::string outputFile;
-	std::string describeFile;
+	// default option values
+	float scaleFactor = 1.0f;
+	std::string outputFile = "";
+	std::string describeFile = "";
 
 	// find any options
 	for (int i = 1; i < argc - 1; ++i)
@@ -34,6 +36,8 @@ int main(int argc, char *argv[])
 
 		if (arg.substr(0, 11) == "--describe=")
 		{
+			// description file
+
 			if (arg.length() == 11)
 			{
 				printf("Missing description output filename.\n");
@@ -44,12 +48,33 @@ int main(int argc, char *argv[])
 
 		else if (arg.substr(0, 6) == "--out=")
 		{
+			// different output filename
+
 			if (arg.length() == 6)
 			{
 				printf("Missing output filename.\n");
 				return 1;
 			}
 			outputFile = arg.substr(6);
+		}
+
+		if (arg.substr(0, 8) == "--scale=")
+		{
+			// scale factor
+
+			if (arg.length() == 8)
+			{
+				printf("Missing scale factor.\n");
+				return 1;
+			}
+
+			scaleFactor = (float)atof(arg.substr(8).c_str());
+
+			if (scaleFactor == 0.0f)
+			{
+				printf("Invalid or 0.0 scale factor.\n");
+				return 1;
+			}
 		}
 	}
 
@@ -109,7 +134,7 @@ int main(int argc, char *argv[])
 		printf("Using static converter.\n");
 		try
 		{
-			ConvertStatic(outputFile, scene);
+			ConvertStatic(outputFile, scene, scaleFactor);
 		}
 		catch (std::exception &ex)
 		{
@@ -123,7 +148,7 @@ int main(int argc, char *argv[])
 		printf("Using skeletal animation converter.\n");
 		try
 		{
-			ConvertSkeletalAnimated(outputFile, scene);
+			ConvertSkeletalAnimated(outputFile, scene, scaleFactor);
 		}
 		catch (std::exception &ex)
 		{

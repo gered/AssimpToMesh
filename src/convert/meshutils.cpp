@@ -10,7 +10,7 @@ void WriteMeshHeader(FILE *fp)
 	fwrite(&version, 1, 1, fp);
 }
 
-void WriteVertices(const AssimpVertices &vertices, FILE *fp)
+void WriteVertices(const AssimpVertices &vertices, FILE *fp, float scaleFactor)
 {
 	uint32_t count = vertices.size();
 	if (count == 0)
@@ -27,9 +27,14 @@ void WriteVertices(const AssimpVertices &vertices, FILE *fp)
 
 	for (uint32_t i = 0; i < count; ++i)
 	{
-		fwrite(&vertices[i].x, sizeof(float), 1, fp);
-		fwrite(&vertices[i].y, sizeof(float), 1, fp);
-		fwrite(&vertices[i].z, sizeof(float), 1, fp);
+		aiVector3D v = vertices[i];
+		v.x *= scaleFactor;
+		v.y *= scaleFactor;
+		v.z *= scaleFactor;
+		
+		fwrite(&v.x, sizeof(float), 1, fp);
+		fwrite(&v.y, sizeof(float), 1, fp);
+		fwrite(&v.z, sizeof(float), 1, fp);
 	}
 }
 
@@ -199,7 +204,7 @@ void WriteSubMeshes(const std::vector<SubMesh> &subMeshes, FILE *fp)
 	}
 }
 
-void WriteJoints(const std::vector<MeshJoint> &joints, FILE *fp)
+void WriteJoints(const std::vector<MeshJoint> &joints, FILE *fp, float scaleFactor)
 {
 	uint32_t count = joints.size();
 	if (count == 0)
@@ -232,18 +237,28 @@ void WriteJoints(const std::vector<MeshJoint> &joints, FILE *fp)
 		int32_t parentIndex = GetIndexOf(joints, j->parentName);
 		fwrite(&parentIndex, 4, 1, fp);
 
-		fwrite(&j->localPosition.x, sizeof(float), 1, fp);
-		fwrite(&j->localPosition.y, sizeof(float), 1, fp);
-		fwrite(&j->localPosition.z, sizeof(float), 1, fp);
+		aiVector3D localPosition = j->localPosition;
+		localPosition.x *= scaleFactor;
+		localPosition.y *= scaleFactor;
+		localPosition.z *= scaleFactor;
+
+		aiVector3D offsetPosition = j->offsetPosition;
+		offsetPosition.x *= scaleFactor;
+		offsetPosition.y *= scaleFactor;
+		offsetPosition.z *= scaleFactor;
+
+		fwrite(&localPosition.x, sizeof(float), 1, fp);
+		fwrite(&localPosition.y, sizeof(float), 1, fp);
+		fwrite(&localPosition.z, sizeof(float), 1, fp);
 
 		fwrite(&j->localRotation.x, sizeof(float), 1, fp);
 		fwrite(&j->localRotation.y, sizeof(float), 1, fp);
 		fwrite(&j->localRotation.z, sizeof(float), 1, fp);
 		fwrite(&j->localRotation.w, sizeof(float), 1, fp);
 
-		fwrite(&j->offsetPosition.x, sizeof(float), 1, fp);
-		fwrite(&j->offsetPosition.y, sizeof(float), 1, fp);
-		fwrite(&j->offsetPosition.z, sizeof(float), 1, fp);
+		fwrite(&offsetPosition.x, sizeof(float), 1, fp);
+		fwrite(&offsetPosition.y, sizeof(float), 1, fp);
+		fwrite(&offsetPosition.z, sizeof(float), 1, fp);
 
 		fwrite(&j->offsetRotation.x, sizeof(float), 1, fp);
 		fwrite(&j->offsetRotation.y, sizeof(float), 1, fp);
@@ -271,7 +286,7 @@ void WriteJointToVertexMap(const std::vector<uint32_t> &vertexToJointMap, FILE *
 	}
 }
 
-void WriteJointKeyFrames(const std::vector<JointKeyFrames> &jointKeyFrames, FILE *fp)
+void WriteJointKeyFrames(const std::vector<JointKeyFrames> &jointKeyFrames, FILE *fp, float scaleFactor)
 {
 	uint32_t numJoints = jointKeyFrames.size();
 	if (numJoints == 0)
@@ -296,9 +311,14 @@ void WriteJointKeyFrames(const std::vector<JointKeyFrames> &jointKeyFrames, FILE
 		{
 			const MeshJointKeyFrame *frame = &jointKeyFrames[i][j];
 
-			fwrite(&frame->position.x, sizeof(float), 1, fp);
-			fwrite(&frame->position.y, sizeof(float), 1, fp);
-			fwrite(&frame->position.z, sizeof(float), 1, fp);
+			aiVector3D position = frame->position;
+			position.x *= scaleFactor;
+			position.y *= scaleFactor;
+			position.z *= scaleFactor;
+
+			fwrite(&position.x, sizeof(float), 1, fp);
+			fwrite(&position.y, sizeof(float), 1, fp);
+			fwrite(&position.z, sizeof(float), 1, fp);
 
 			fwrite(&frame->rotation.x, sizeof(float), 1, fp);
 			fwrite(&frame->rotation.y, sizeof(float), 1, fp);

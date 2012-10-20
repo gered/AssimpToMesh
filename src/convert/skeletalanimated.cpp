@@ -7,7 +7,7 @@
 #include "mesh.h"
 #include "../assimputils/utils.h"
 
-void ConvertSkeletalAnimated(const std::string &outfile, const aiScene *scene)
+void ConvertSkeletalAnimated(const std::string &outfile, const aiScene *scene, float scaleFactor)
 {
 	FILE *fp = fopen(outfile.c_str(), "wb");
 	if (fp == NULL)
@@ -21,7 +21,7 @@ void ConvertSkeletalAnimated(const std::string &outfile, const aiScene *scene)
 	AssimpVertices texCoords;
 	AssimpVerticesMap vertexIndicesMap;
 	CollectAllMeshVertices(scene, vertices, normals, texCoords, vertexIndicesMap);
-	WriteVertices(vertices, fp);
+	WriteVertices(vertices, fp, scaleFactor);
 	WriteNormals(normals, fp);
 	WriteTexCoords(texCoords, fp);
 
@@ -111,7 +111,7 @@ void ConvertSkeletalAnimated(const std::string &outfile, const aiScene *scene)
 			joints.push_back(joint);
 		}
 	}
-	WriteJoints(joints, fp);
+	WriteJoints(joints, fp, scaleFactor);
 	WriteJointToVertexMap(vertexToJointMap, fp);
 
 	// TODO: this collection process is dumb at the moment. assumes each bone
@@ -141,7 +141,7 @@ void ConvertSkeletalAnimated(const std::string &outfile, const aiScene *scene)
 
 		meshFrames.push_back(jointFrames);
 	}
-	WriteJointKeyFrames(meshFrames, fp);
+	WriteJointKeyFrames(meshFrames, fp, scaleFactor);
 
 	fclose(fp);
 }

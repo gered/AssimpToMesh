@@ -7,7 +7,7 @@
 #include "mesh.h"
 #include "../assimputils/utils.h"
 
-void ConvertStatic(const std::string &outfile, const aiScene *scene)
+void ConvertStatic(const std::string &outfile, const aiScene *scene, float scaleFactor)
 {
 	FILE *fp = fopen(outfile.c_str(), "wb");
 	if (fp == NULL)
@@ -21,7 +21,7 @@ void ConvertStatic(const std::string &outfile, const aiScene *scene)
 	AssimpVertices texCoords;
 	AssimpVerticesMap vertexIndicesMap;
 	CollectAllMeshVertices(scene, vertices, normals, texCoords, vertexIndicesMap);
-	WriteVertices(vertices, fp);
+	WriteVertices(vertices, fp, scaleFactor);
 	WriteNormals(normals, fp);
 	WriteTexCoords(texCoords, fp);
 

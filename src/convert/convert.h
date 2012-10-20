@@ -4,7 +4,7 @@
 #include <string>
 #include <assimp/aiScene.h>
 
-void ConvertStatic(const std::string &outfile, const aiScene *scene);
-void ConvertSkeletalAnimated(const std::string &outfile, const aiScene *scene);
+void ConvertStatic(const std::string &outfile, const aiScene *scene, float scaleFactor);
+void ConvertSkeletalAnimated(const std::string &outfile, const aiScene *scene, float scaleFactor);
 
 #endif

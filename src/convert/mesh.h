@@ -11,14 +11,14 @@
 #include "meshjoint.h"
 
 void WriteMeshHeader(FILE *fp);
-void WriteVertices(const AssimpVertices &vertices, FILE *fp);
+void WriteVertices(const AssimpVertices &vertices, FILE *fp, float scaleFactor);
 void WriteNormals(const AssimpVertices &normals, FILE *fp);
 void WriteTexCoords(const AssimpVertices &texCoords, FILE *fp);
 void WriteMaterials(const std::vector<MeshMaterial> &materials, FILE *fp);
 void WriteTriangles(const std::vector<MeshTriangle> &triangles, FILE *fp);
 void WriteSubMeshes(const std::vector<SubMesh> &subMeshes, FILE *fp);
-void WriteJoints(const std::vector<MeshJoint> &joints, FILE *fp);
+void WriteJoints(const std::vector<MeshJoint> &joints, FILE *fp, float scaleFactor);
 void WriteJointToVertexMap(const std::vector<uint32_t> &vertexToJointMap, FILE *fp);
-void WriteJointKeyFrames(const std::vector<JointKeyFrames> &jointKeyFrames, FILE *fp);
+void WriteJointKeyFrames(const std::vector<JointKeyFrames> &jointKeyFrames, FILE *fp, float scaleFactor);
 
 #endif
